@@ -33,5 +33,5 @@
     "mdns_network_interface": "str?"
   },
 
-  "image": "ghcr.io/zvikarp/ha-plus-matter-hub"
+  "image": "ghcr.io/zvikarp/ha-plus-matter-hub-addon"
 }
