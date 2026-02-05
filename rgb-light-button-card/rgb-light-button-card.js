@@ -82,80 +82,130 @@ class RgbLightButtonCard extends HTMLElement {
     
     this.shadowRoot.innerHTML = `
       <style>
+        :host {
+          display: block;
+        }
         ha-card {
-          padding: 0;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
           overflow: hidden;
         }
         .card-header {
-          padding: 20px 16px 16px;
-          font-size: 20px;
-          font-weight: 400;
-          color: var(--primary-text-color);
-          line-height: 1.2;
-        }
-        .card-content {
-          padding: 0 16px 16px;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-        .power-section {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 12px;
-          padding-bottom: 8px;
+          padding: 16px;
+          font-size: 18px;
+          font-weight: 500;
+          color: var(--primary-text-color);
+          border-bottom: 1px solid var(--divider-color);
+        }
+        .card-content {
+          flex: 1;
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        
+        /* Control section */
+        .control-section {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+        .entity-info {
+          flex: 1;
+          min-width: 0;
         }
         .entity-name {
           font-size: 14px;
+          font-weight: 500;
+          color: var(--primary-text-color);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .entity-state {
+          font-size: 12px;
           color: var(--secondary-text-color);
-          font-weight: 400;
+          margin-top: 2px;
         }
         .power-button {
-          min-width: 80px;
-          height: 36px;
-          padding: 0 16px;
+          flex-shrink: 0;
+          width: 48px;
+          height: 48px;
           border: none;
-          border-radius: 18px;
-          font-size: 14px;
-          font-weight: 500;
+          border-radius: 24px;
           cursor: pointer;
-          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+          transition: all 0.2s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        .power-button::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: currentColor;
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
+        .power-button:hover::before {
+          opacity: 0.08;
+        }
+        .power-button:active::before {
+          opacity: 0.12;
         }
         .power-button.on {
           background: var(--primary-color);
           color: var(--text-primary-color, white);
         }
         .power-button.off {
-          background: var(--disabled-color, #bdbdbd);
-          color: var(--text-primary-color, white);
+          background: var(--disabled-color, rgba(0, 0, 0, 0.12));
+          color: var(--secondary-text-color);
         }
-        .power-button:hover {
-          box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-          transform: translateY(-1px);
+        .power-icon {
+          width: 24px;
+          height: 24px;
+          position: relative;
+          z-index: 1;
         }
-        .power-button:active {
-          transform: translateY(0);
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+        
+        /* Brightness section */
         .brightness-section {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 8px;
         }
-        .brightness-label {
+        .brightness-header {
           display: flex;
           justify-content: space-between;
-          font-size: 14px;
+          align-items: center;
+        }
+        .brightness-label {
+          font-size: 12px;
+          font-weight: 500;
           color: var(--secondary-text-color);
-          font-weight: 400;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+        }
+        .brightness-value {
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--primary-text-color);
+        }
+        .brightness-slider-wrapper {
+          position: relative;
+          padding: 8px 0;
         }
         .brightness-slider {
           width: 100%;
-          height: 48px;
+          height: 6px;
           -webkit-appearance: none;
           appearance: none;
           background: transparent;
@@ -164,123 +214,147 @@ class RgbLightButtonCard extends HTMLElement {
         }
         .brightness-slider::-webkit-slider-track {
           width: 100%;
-          height: 4px;
-          background: var(--divider-color, #e0e0e0);
-          border-radius: 2px;
+          height: 6px;
+          background: var(--disabled-color, rgba(0, 0, 0, 0.12));
+          border-radius: 3px;
         }
         .brightness-slider::-webkit-slider-thumb {
           -webkit-appearance: none;
           appearance: none;
-          width: 24px;
-          height: 24px;
+          width: 20px;
+          height: 20px;
           background: var(--primary-color);
           border-radius: 50%;
           cursor: pointer;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+          border: 2px solid var(--card-background-color);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          transition: transform 0.1s ease;
         }
         .brightness-slider::-webkit-slider-thumb:hover {
-          box-shadow: 0 3px 6px rgba(0,0,0,0.25);
-          transform: scale(1.1);
+          transform: scale(1.2);
         }
         .brightness-slider::-moz-range-track {
           width: 100%;
-          height: 4px;
-          background: var(--divider-color, #e0e0e0);
-          border-radius: 2px;
+          height: 6px;
+          background: var(--disabled-color, rgba(0, 0, 0, 0.12));
+          border-radius: 3px;
         }
         .brightness-slider::-moz-range-thumb {
-          width: 24px;
-          height: 24px;
+          width: 20px;
+          height: 20px;
           background: var(--primary-color);
           border-radius: 50%;
           cursor: pointer;
-          border: none;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+          border: 2px solid var(--card-background-color);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          transition: transform 0.1s ease;
         }
         .brightness-slider::-moz-range-thumb:hover {
-          box-shadow: 0 3px 6px rgba(0,0,0,0.25);
-          transform: scale(1.1);
+          transform: scale(1.2);
         }
+        
+        /* Section divider */
+        .section-divider {
+          height: 1px;
+          background: var(--divider-color);
+          margin: 4px 0;
+        }
+        
+        /* Section title */
         .section-title {
-          font-size: 14px;
+          font-size: 12px;
           font-weight: 500;
           color: var(--secondary-text-color);
-          margin-bottom: 8px;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.1em;
+          margin-bottom: 12px;
         }
+        
+        /* Colors section */
         .colors-section {
           display: grid;
           grid-template-columns: repeat(${this._config.columns}, 1fr);
-          gap: 8px;
+          gap: 10px;
         }
         .color-button {
           aspect-ratio: 1;
           border: none;
-          border-radius: 12px;
+          border-radius: 8px;
           cursor: pointer;
-          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.2s ease;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 11px;
-          font-weight: 500;
+          font-size: 10px;
+          font-weight: 600;
           color: white;
-          text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 -2px 4px rgba(0,0,0,0.1);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
           position: relative;
           overflow: hidden;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         }
-        .color-button::before {
+        .color-button::after {
           content: '';
           position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 100%);
+          inset: 0;
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%, rgba(0, 0, 0, 0.2) 100%);
           pointer-events: none;
         }
         .color-button:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0,0,0,0.2), inset 0 -2px 4px rgba(0,0,0,0.1);
+          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
         }
         .color-button:active {
           transform: translateY(0);
-          box-shadow: 0 1px 2px rgba(0,0,0,0.15), inset 0 -1px 2px rgba(0,0,0,0.1);
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
         }
+        
+        /* Effects section */
         .effects-section {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 8px;
+          gap: 10px;
         }
         .effect-button {
-          padding: 12px 16px;
-          border: 1px solid var(--divider-color, #e0e0e0);
+          padding: 14px 16px;
+          border: 1px solid var(--divider-color);
           border-radius: 8px;
           background: var(--card-background-color);
           color: var(--primary-text-color);
           font-size: 14px;
           font-weight: 500;
           cursor: pointer;
-          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+          transition: all 0.2s ease;
+          text-align: center;
+          position: relative;
+          overflow: hidden;
+        }
+        .effect-button::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: var(--primary-color);
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
+        .effect-button:hover::before {
+          opacity: 0.08;
+        }
+        .effect-button:active::before {
+          opacity: 0.12;
         }
         .effect-button:hover {
-          background: var(--primary-color);
-          color: var(--text-primary-color, white);
           border-color: var(--primary-color);
-          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-          transform: translateY(-1px);
+          color: var(--primary-color);
         }
-        .effect-button:active {
-          transform: translateY(0);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        .effect-button-text {
+          position: relative;
+          z-index: 1;
         }
+        
+        /* Disabled state */
         .disabled {
-          opacity: 0.4;
+          opacity: 0.38;
           pointer-events: none;
         }
       </style>
@@ -288,56 +362,75 @@ class RgbLightButtonCard extends HTMLElement {
       <ha-card>
         ${this._config.title ? `<div class="card-header">${this._config.title}</div>` : ''}
         <div class="card-content">
-          <div class="power-section">
+          <!-- Control Section -->
+          <div class="control-section">
+            <div class="entity-info">
+              <div class="entity-name">${state.attributes.friendly_name || this._config.entity}</div>
+              <div class="entity-state">${isOn ? `On • ${brightnessPercent}%` : 'Off'}</div>
+            </div>
             <button class="power-button ${isOn ? 'on' : 'off'}">
-              ${isOn ? 'ON' : 'OFF'}
+              <svg class="power-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16.56 5.44l-1.45 1.45A5.969 5.969 0 0 1 18 12a6 6 0 0 1-6 6 6 6 0 0 1-6-6c0-2.17 1.16-4.06 2.88-5.12L7.44 5.44A7.961 7.961 0 0 0 4 12a8 8 0 0 0 8 8 8 8 0 0 0 8-8c0-2.72-1.36-5.12-3.44-6.56M13 3h-2v10h2V3z"/>
+              </svg>
             </button>
-            <span class="entity-name">${state.attributes.friendly_name || this._config.entity}</span>
           </div>
           
+          <!-- Brightness Section -->
           ${this._config.show_brightness ? `
             <div class="brightness-section ${!isOn ? 'disabled' : ''}">
-              <div class="brightness-label">
-                <span>Brightness</span>
-                <span>${brightnessPercent}%</span>
+              <div class="brightness-header">
+                <span class="brightness-label">Brightness</span>
+                <span class="brightness-value">${brightnessPercent}%</span>
               </div>
-              <input 
-                type="range" 
-                class="brightness-slider" 
-                min="0" 
-                max="255" 
-                value="${brightness}"
-              >
+              <div class="brightness-slider-wrapper">
+                <input 
+                  type="range" 
+                  class="brightness-slider" 
+                  min="0" 
+                  max="255" 
+                  value="${brightness}"
+                >
+              </div>
             </div>
           ` : ''}
           
-          <div class="${!isOn ? 'disabled' : ''}">
-            <div class="section-title">Colors</div>
-            <div class="colors-section">
-              ${this._config.colors.map(color => `
-                <button 
-                  class="color-button" 
-                  style="background-color: rgb(${color.rgb.join(',')})"
-                  title="${color.name}"
-                >
-                  ${color.name}
-                </button>
-              `).join('')}
-            </div>
-          </div>
+          ${this._config.show_brightness && (this._config.colors.length > 0 || this._config.effects.length > 0) ? `<div class="section-divider"></div>` : ''}
           
-          ${this._config.show_effects ? `
+          <!-- Colors Section -->
+          ${this._config.colors.length > 0 ? `
             <div class="${!isOn ? 'disabled' : ''}">
-              <div class="section-title">Effects</div>
-              <div class="effects-section">
-                ${this._config.effects.map(effect => `
-                  <button class="effect-button">
-                    ${effect.name}
+              <div class="section-title">Colors</div>
+              <div class="colors-section">
+                ${this._config.colors.map(color => `
+                  <button 
+                    class="color-button" 
+                    style="background-color: rgb(${color.rgb.join(',')})"
+                    title="${color.name}"
+                    aria-label="${color.name}"
+                  >
                   </button>
                 `).join('')}
               </div>
             </div>
           ` : ''}
+          
+          ${this._config.colors.length > 0 && this._config.effects.length > 0 ? `<div class="section-divider"></div>` : ''}
+          
+          <!-- Effects Section -->
+          ${this._config.show_effects && this._config.effects.length > 0 ? `
+            <div class="${!isOn ? 'disabled' : ''}">
+              <div class="section-title">Effects</div>
+              <div class="effects-section">
+                ${this._config.effects.map(effect => `
+                  <button class="effect-button" aria-label="${effect.name}">
+                    <span class="effect-button-text">${effect.name}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      </ha-card>
         </div>
       </ha-card>
     `;
