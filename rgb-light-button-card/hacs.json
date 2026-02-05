@@ -1,0 +1,6 @@
+{
+  "name": "RGB Light Button Card",
+  "render_readme": true,
+  "filename": "rgb-light-button-card.js",
+  "homeassistant": "2021.4.0"
+}

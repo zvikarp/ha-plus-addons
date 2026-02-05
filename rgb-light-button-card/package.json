@@ -1,0 +1,25 @@
+{
+  "name": "rgb-light-button-card",
+  "version": "1.0.0",
+  "description": "A Home Assistant custom card for controlling RGB lights with preset color buttons",
+  "main": "rgb-light-button-card.js",
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "custom-card",
+    "rgb",
+    "led",
+    "light",
+    "aliexpress"
+  ],
+  "author": "zvikarp",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zvikarp/ha-plus-addons"
+  },
+  "bugs": {
+    "url": "https://github.com/zvikarp/ha-plus-addons/issues"
+  },
+  "homepage": "https://github.com/zvikarp/ha-plus-addons/tree/main/rgb-light-button-card"
+}
