@@ -2,6 +2,8 @@
 
 Control your RGB lights with preset color buttons instead of a color wheel!
 
+![RGB Light Button Card](https://github.com/user-attachments/assets/8f3eb5c4-93dc-492f-a605-33f997b849f7)
+
 Perfect for:
 - ✨ Cheap AliExpress RGB LED strips
 - 💡 RGB lights with limited color options

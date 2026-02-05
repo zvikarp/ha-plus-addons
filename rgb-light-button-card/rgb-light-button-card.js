@@ -22,7 +22,7 @@ class RgbLightButtonCard extends HTMLElement {
       { name: 'Purple', rgb: [128, 0, 128] },
       { name: 'Yellow', rgb: [255, 255, 0] },
       { name: 'Pink', rgb: [255, 192, 203] },
-      { name: 'Lime', rgb: [0, 255, 0] },
+      { name: 'Lime', rgb: [50, 205, 50] },
       { name: 'Magenta', rgb: [255, 0, 255] },
       { name: 'Warm White', rgb: [255, 230, 180] }
     ];
@@ -232,7 +232,7 @@ class RgbLightButtonCard extends HTMLElement {
         ${this._config.title ? `<div class="card-header">${this._config.title}</div>` : ''}
         <div class="card-content">
           <div class="power-section">
-            <button class="power-button ${isOn ? 'on' : 'off'}" @click="${() => this.togglePower()}">
+            <button class="power-button ${isOn ? 'on' : 'off'}">
               ${isOn ? 'ON' : 'OFF'}
             </button>
             <span>${state.attributes.friendly_name || this._config.entity}</span>
@@ -250,7 +250,6 @@ class RgbLightButtonCard extends HTMLElement {
                 min="0" 
                 max="255" 
                 value="${brightness}"
-                @input="${(e) => this.setBrightness(e.target.value)}"
               >
             </div>
           ` : ''}
@@ -262,7 +261,6 @@ class RgbLightButtonCard extends HTMLElement {
                 <button 
                   class="color-button" 
                   style="background-color: rgb(${color.rgb.join(',')})"
-                  @click="${() => this.setColor(color.rgb)}"
                   title="${color.name}"
                 >
                   ${color.name}
@@ -276,10 +274,7 @@ class RgbLightButtonCard extends HTMLElement {
               <div class="section-title">Effects</div>
               <div class="effects-section">
                 ${this._config.effects.map(effect => `
-                  <button 
-                    class="effect-button"
-                    @click="${() => this.setEffect(effect.effect)}"
-                  >
+                  <button class="effect-button">
                     ${effect.name}
                   </button>
                 `).join('')}

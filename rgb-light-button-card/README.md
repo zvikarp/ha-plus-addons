@@ -212,7 +212,9 @@ Compatible with:
 
 ## Screenshots
 
-(To add screenshots, use the card in your Home Assistant and take screenshots)
+![RGB Light Button Card Preview](https://github.com/user-attachments/assets/8f3eb5c4-93dc-492f-a605-33f997b849f7)
+
+*The card showing all default features: power toggle, brightness slider, 12 color buttons, and 4 effect buttons*
 
 ## Contributing
 
