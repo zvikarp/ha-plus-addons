@@ -83,14 +83,18 @@ class RgbLightButtonCard extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         ha-card {
-          padding: 16px;
+          padding: 0;
+          overflow: hidden;
         }
         .card-header {
-          font-size: 24px;
-          font-weight: 500;
-          margin-bottom: 12px;
+          padding: 20px 16px 16px;
+          font-size: 20px;
+          font-weight: 400;
+          color: var(--primary-text-color);
+          line-height: 1.2;
         }
         .card-content {
+          padding: 0 16px 16px;
           display: flex;
           flex-direction: column;
           gap: 16px;
@@ -100,75 +104,112 @@ class RgbLightButtonCard extends HTMLElement {
           align-items: center;
           justify-content: space-between;
           gap: 12px;
+          padding-bottom: 8px;
+        }
+        .entity-name {
+          font-size: 14px;
+          color: var(--secondary-text-color);
+          font-weight: 400;
         }
         .power-button {
-          min-width: 100px;
-          padding: 12px 24px;
+          min-width: 80px;
+          height: 36px;
+          padding: 0 16px;
           border: none;
-          border-radius: 8px;
-          font-size: 16px;
+          border-radius: 18px;
+          font-size: 14px;
           font-weight: 500;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .power-button.on {
           background: var(--primary-color);
-          color: var(--text-primary-color);
+          color: var(--text-primary-color, white);
         }
         .power-button.off {
-          background: var(--disabled-color);
-          color: var(--text-primary-color);
+          background: var(--disabled-color, #bdbdbd);
+          color: var(--text-primary-color, white);
         }
         .power-button:hover {
-          opacity: 0.8;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+          transform: translateY(-1px);
+        }
+        .power-button:active {
+          transform: translateY(0);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .brightness-section {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 12px;
         }
         .brightness-label {
           display: flex;
           justify-content: space-between;
           font-size: 14px;
           color: var(--secondary-text-color);
+          font-weight: 400;
         }
         .brightness-slider {
           width: 100%;
-          height: 40px;
+          height: 48px;
           -webkit-appearance: none;
           appearance: none;
           background: transparent;
           outline: none;
+          cursor: pointer;
         }
         .brightness-slider::-webkit-slider-track {
           width: 100%;
-          height: 8px;
-          background: var(--disabled-color);
-          border-radius: 4px;
+          height: 4px;
+          background: var(--divider-color, #e0e0e0);
+          border-radius: 2px;
         }
         .brightness-slider::-webkit-slider-thumb {
           -webkit-appearance: none;
           appearance: none;
-          width: 20px;
-          height: 20px;
+          width: 24px;
+          height: 24px;
           background: var(--primary-color);
           border-radius: 50%;
           cursor: pointer;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .brightness-slider::-webkit-slider-thumb:hover {
+          box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+          transform: scale(1.1);
         }
         .brightness-slider::-moz-range-track {
           width: 100%;
-          height: 8px;
-          background: var(--disabled-color);
-          border-radius: 4px;
+          height: 4px;
+          background: var(--divider-color, #e0e0e0);
+          border-radius: 2px;
         }
         .brightness-slider::-moz-range-thumb {
-          width: 20px;
-          height: 20px;
+          width: 24px;
+          height: 24px;
           background: var(--primary-color);
           border-radius: 50%;
           cursor: pointer;
           border: none;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .brightness-slider::-moz-range-thumb:hover {
+          box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+          transform: scale(1.1);
+        }
+        .section-title {
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--secondary-text-color);
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
         .colors-section {
           display: grid;
@@ -177,24 +218,38 @@ class RgbLightButtonCard extends HTMLElement {
         }
         .color-button {
           aspect-ratio: 1;
-          border: 2px solid var(--divider-color);
-          border-radius: 8px;
+          border: none;
+          border-radius: 12px;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 500;
           color: white;
-          text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+          text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 -2px 4px rgba(0,0,0,0.1);
+          position: relative;
+          overflow: hidden;
+        }
+        .color-button::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 100%);
+          pointer-events: none;
         }
         .color-button:hover {
-          transform: scale(1.05);
-          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2), inset 0 -2px 4px rgba(0,0,0,0.1);
         }
         .color-button:active {
-          transform: scale(0.95);
+          transform: translateY(0);
+          box-shadow: 0 1px 2px rgba(0,0,0,0.15), inset 0 -1px 2px rgba(0,0,0,0.1);
         }
         .effects-section {
           display: grid;
@@ -202,25 +257,27 @@ class RgbLightButtonCard extends HTMLElement {
           gap: 8px;
         }
         .effect-button {
-          padding: 12px;
-          border: 2px solid var(--primary-color);
+          padding: 12px 16px;
+          border: 1px solid var(--divider-color, #e0e0e0);
           border-radius: 8px;
           background: var(--card-background-color);
           color: var(--primary-text-color);
           font-size: 14px;
           font-weight: 500;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .effect-button:hover {
           background: var(--primary-color);
-          color: var(--text-primary-color);
+          color: var(--text-primary-color, white);
+          border-color: var(--primary-color);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          transform: translateY(-1px);
         }
-        .section-title {
-          font-size: 14px;
-          font-weight: 500;
-          color: var(--secondary-text-color);
-          margin-bottom: 8px;
+        .effect-button:active {
+          transform: translateY(0);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .disabled {
           opacity: 0.4;
@@ -235,7 +292,7 @@ class RgbLightButtonCard extends HTMLElement {
             <button class="power-button ${isOn ? 'on' : 'off'}">
               ${isOn ? 'ON' : 'OFF'}
             </button>
-            <span>${state.attributes.friendly_name || this._config.entity}</span>
+            <span class="entity-name">${state.attributes.friendly_name || this._config.entity}</span>
           </div>
           
           ${this._config.show_brightness ? `
