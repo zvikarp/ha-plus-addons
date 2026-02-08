@@ -1,2 +1,2 @@
-# ha-plus-addons
+# ha-plus-apps
 Home Assistant Apps
