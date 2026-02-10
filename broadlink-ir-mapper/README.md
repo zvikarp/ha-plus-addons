@@ -1,5 +1,10 @@
 # BroadLink IR Remote Mapper
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../resources/icons-dark/ha-plus-rgb-ir-mapper.png">
+  <img src="../resources/icons-light/ha-plus-rgb-ir-mapper.png" alt="HA Plus BroadLink IR Mapper" width="140">
+</picture>
+
 A Home Assistant custom integration that maps IR remote commands from BroadLink devices to Home Assistant light entities. This is specifically designed for LED lights and other IR-controlled devices that don't have native Home Assistant support.
 
 ## Problem It Solves
