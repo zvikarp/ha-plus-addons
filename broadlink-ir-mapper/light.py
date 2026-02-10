@@ -203,21 +203,28 @@ class BroadLinkIRLight(LightEntity):
 
     async def _set_brightness(self, target_brightness: int) -> None:
         """Set brightness by sending IR commands."""
-        if IR_CODE_BRIGHTNESS_UP not in self._ir_codes:
-            _LOGGER.warning("Brightness control not configured")
-            return
-
         current = self._brightness
         steps = abs(target_brightness - current) // 25  # Approximate steps
 
+        if target_brightness == current:
+            return
+
         if target_brightness > current:
             code = self._ir_codes.get(IR_CODE_BRIGHTNESS_UP)
+            missing_code_name = IR_CODE_BRIGHTNESS_UP
         else:
             code = self._ir_codes.get(IR_CODE_BRIGHTNESS_DOWN)
+            missing_code_name = IR_CODE_BRIGHTNESS_DOWN
 
-        if code:
-            for _ in range(min(steps, 10)):  # Limit to 10 steps
-                await self._send_ir_command(code)
+        if not code:
+            _LOGGER.warning(
+                "Brightness control not configured for direction: %s",
+                missing_code_name,
+            )
+            return
+
+        for _ in range(min(steps, 10)):  # Limit to 10 steps
+            await self._send_ir_command(code)
 
         self._brightness = target_brightness
 
