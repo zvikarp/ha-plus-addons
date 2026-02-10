@@ -42,10 +42,11 @@ IR_CODE_BRIGHTNESS_DOWN = "brightness_down"
 # Configuration schema
 COLOR_SCHEMA = vol.Schema({
     vol.Required(CONF_NAME): cv.string,
-    vol.Required("rgb"): vol.All(
-        vol.ExactSequence([cv.positive_int, cv.positive_int, cv.positive_int]),
-        vol.Range(min=0, max=255)
-    ),
+    vol.Required("rgb"): vol.ExactSequence([
+        vol.All(vol.Coerce(int), vol.Range(min=0, max=255)),
+        vol.All(vol.Coerce(int), vol.Range(min=0, max=255)),
+        vol.All(vol.Coerce(int), vol.Range(min=0, max=255)),
+    ]),
     vol.Required("ir_code"): cv.string,
 })
 
