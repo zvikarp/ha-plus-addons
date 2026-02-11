@@ -431,8 +431,6 @@ class RgbLightButtonCard extends HTMLElement {
           ` : ''}
         </div>
       </ha-card>
-        </div>
-      </ha-card>
     `;
     
     this.attachEventListeners();
